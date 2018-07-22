@@ -1,0 +1,15 @@
+project.group = "org.sellcom"
+project.version = "2.0.0"
+
+apply from: "gradle/eclipse.gradle"
+apply from: "gradle/java.gradle"
+apply from: "gradle/java-module.gradle"
+apply from: "gradle/oss-library.gradle"
+
+dependencies {
+	testImplementation "org.hamcrest:hamcrest-junit:2.0.0.0"
+}
+
+repositories {
+	mavenCentral()
+}

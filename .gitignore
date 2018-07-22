@@ -1,0 +1,72 @@
+# Android
+# -------
+
+*.apk
+*.ap_
+*.dex
+
+local.properties
+
+# Android Studio
+# --------------
+
+captures/
+local.properties
+
+# Eclipse
+# -------
+
+*.launch
+
+.metadata/
+.settings/
+bin/
+gen/
+proguard/
+.classpath
+.project
+
+# General
+# -------
+
+*~
+*.bak
+*.log
+*.swp
+*.tmp
+
+log/
+tmp/
+
+# Gradle
+# ------
+
+.gradle/
+build/
+
+# Idea
+# ----
+
+*.iml
+*.ipr
+*.iws
+
+.idea/
+
+# Java
+# ----
+
+*.class
+*.ear
+*.jar
+*.war
+
+# MacOS
+# -----
+
+.DS_Store
+
+# Maven
+# -----
+
+target/

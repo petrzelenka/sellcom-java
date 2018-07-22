@@ -1,0 +1,70 @@
+*				text=auto eol=lf
+
+# Android
+# -------
+
+*.aidl			text filter=cleantext
+
+# General
+# -------
+
+*.jpg			binary
+*.log			text filter=cleantext
+*.png			binary
+*.txt			text filter=cleantext
+
+# Git
+# ---
+
+.gitattributes	text filter=cleantext
+.gitignore		text filter=cleantext
+
+# HTML & CSS
+# ----------
+
+*.css			text filter=cleantext
+*.html			text diff=html filter=cleantext
+
+# Java
+# ----
+
+*.faces			text filter=cleantext
+*.groovy		text filter=cleantext
+*.java			text diff=java filter=cleantext
+*.jsf			text filter=cleantext
+*.jsp			text filter=cleantext
+*.keystore		binary
+*.properties	text filter=cleantext
+*.scala			text diff=scala filter=cleantext
+
+# JavaScript
+# ----------
+
+*.js			text filter=cleantext
+*.json			text filter=cleantext
+
+# Linux
+# -----
+
+*.sh			text filter=cleantext
+
+# .NET
+# ----
+
+*.cs			text diff=csharp eol=crlf filter=cleantext
+*.xaml			text eol=crlf filter=cleantext
+
+# SQL
+# ---
+
+*.sql			text filter=cleantext
+*.sqlite		text filter=cleantext
+
+# XML
+# ---
+
+*.xml			text filter=cleantext
+*.xsd			text filter=cleantext
+*.xsl			text filter=cleantext
+*.wadl			text filter=cleantext
+*.wsdl			text filter=cleantext

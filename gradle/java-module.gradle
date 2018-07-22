@@ -1,0 +1,42 @@
+apply plugin: "java-library"
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Configure build process
+
+ext.moduleName = "org.sellcom.core"
+
+jar {
+	manifest {
+		attributes("Automatic-Module-Name": moduleName)
+	}
+}
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Modify build process
+
+sourceSets {
+	module {
+		java {
+			srcDirs = ["src/module/java"]
+		}
+	}
+}
+
+task declareModule(type: JavaCompile) {
+	source = sourceSets.module.java
+	destinationDir = sourceSets.main.java.outputDir
+
+	options.compilerArgs += [
+		"--patch-module", "${moduleName}=" + files(sourceSets.main.java.outputDir).asPath
+	]
+
+	classpath = files()
+}
+
+jar {
+	dependsOn declareModule
+}

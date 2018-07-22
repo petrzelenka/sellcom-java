@@ -1,0 +1,81 @@
+apply plugin: "maven"
+apply plugin: "signing"
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Configure artifact signing
+
+ext["signing.secretKeyRingFile"] = hasProperty("signing_keyring") ? signing_keyring : ""
+ext["signing.keyId"] = hasProperty("signing_keyid") ? signing_keyid : ""
+ext["signing.password"] = hasProperty("signing_password") ? signing_password : ""
+
+signing {
+	sign configurations.archives
+}
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Configure project file generating
+
+tasks.withType(Upload) {
+	repositories.withType(MavenResolver) {
+		beforeDeployment {
+			signing.signPom(it)
+		}
+
+		pom.whenConfigured {
+			project {
+				name project.name
+				url "https://github.com/petrzelenka/sellcom-java.git"
+				description "sellcom.org Core Functions for Java"
+				inceptionYear "2015"
+				
+				licenses {
+					license {
+						name "Apache License, Version 2.0"
+						url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+						distribution "repo"
+					}
+				}
+
+				developers {
+					developer {
+						name "Petr Zelenka"
+						email "petr.zelenka@sellcom.org"
+						url "https://github.com/petrzelenka"
+						timezone "Europe/Prague"
+					}
+				}
+
+				scm {
+					connection "scm:git:git://github.com/petrzelenka/sellcom-java.git"
+					developerConnection "scm:git:ssh://github.com/petrzelenka/sellcom-java.git"
+					url "http://github.com/petrzelenka/sellcom-java"
+				}
+			}
+		}
+	}
+}
+
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+// Configure artifact uploading
+
+ext["sonatypeUsername"] = hasProperty("sonatype_username") ? sonatype_username : ""
+ext["sonatypePassword"] = hasProperty("sonatype_password") ? sonatype_password : ""
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+			snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+		}
+	}
+}
