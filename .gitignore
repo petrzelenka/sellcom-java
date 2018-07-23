@@ -70,3 +70,7 @@ build/
 # -----
 
 target/
+
+# Exceptions
+# ----------
+!gradle-wrapper.jar
