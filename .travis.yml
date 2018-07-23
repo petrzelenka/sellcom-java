@@ -1,4 +1,9 @@
-language: java
+language:
+  - java
+
 jdk:
   - openjdk10
   - oraclejdk10
+
+script:
+  - ./gradlew -x signArchives assemble
