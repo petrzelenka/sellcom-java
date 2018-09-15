@@ -47,7 +47,7 @@ public class MorePaths {
 		// NOTE: The order of the operations is important to correctly handle
 		// situations like in this method call:
 		//
-		//     Paths2.canonicalize(Paths.get("../some_file"));
+		//     MorePaths.canonicalize(Paths.get("../some_file"));
 
 		return path.toAbsolutePath().normalize();
 	}
@@ -225,6 +225,48 @@ public class MorePaths {
 	 */
 	public static Path getWorkingDirectory() {
 		return Paths.get("");
+	}
+
+	/**
+	 * Resolves the given path components against the given base path.
+	 *
+	 * @throws IllegalArgumentException if {@code base} is {@code null}
+	 *
+	 * @since 2.1
+	 *
+	 * @see Path#resolve(Path)
+	 */
+	public static Path resolveAll(Path base, Path... components) {
+		Contract.checkArgument(base != null, "Base path must not be null");
+
+		Path result = base;
+		for (Path currentComponent : components) {
+			if (currentComponent != null) {
+				result = result.resolve(currentComponent);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Resolves the given path components against the given base path.
+	 *
+	 * @throws IllegalArgumentException if {@code base} is {@code null}
+	 *
+	 * @since 2.1
+	 *
+	 * @see Path#resolve(String)
+	 */
+	public static Path resolveAll(Path base, String... components) {
+		Path result = base;
+		for (String currentComponent : components) {
+			if (currentComponent != null) {
+				result = result.resolve(currentComponent);
+			}
+		}
+
+		return result;
 	}
 
 
