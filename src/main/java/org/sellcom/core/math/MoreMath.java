@@ -756,6 +756,37 @@ public class MoreMath {
 	}
 
 	/**
+	 * Checks whether the given number is a power of 2.
+	 *
+	 * @throws IllegalArgumentException if {@code x} is {@code null}
+	 *
+	 * @since 2.1
+	 */
+	public static boolean isPowerOf2(BigInteger x) {
+		Contract.checkArgument(x != null, "X must not be null");
+
+		return (x.signum() > 0) && (x.getLowestSetBit() == (x.bitLength() - 1));
+	}
+
+	/**
+	 * Checks whether the given number is a power of 2.
+	 *
+	 * @since 2.1
+	 */
+	public static boolean isPowerOf2(int x) {
+		return (x > 0) && ((x & (x - 1)) == 0);
+	}
+
+	/**
+	 * Checks whether the given number is a power of 2.
+	 *
+	 * @since 2.1
+	 */
+	public static boolean isPowerOf2(long x) {
+		return (x > 0L) && ((x & (x - 1L)) == 0L);
+	}
+
+	/**
 	 * Returns the least common multiple of the given numbers.
 	 *
 	 * @throws IllegalArgumentException if {@code x} is {@code null}

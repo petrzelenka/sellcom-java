@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 import static org.sellcom.core.math.MoreMath.ceilToMultiple;
 import static org.sellcom.core.math.MoreMath.floorToMultiple;
 import static org.sellcom.core.math.MoreMath.gcd;
+import static org.sellcom.core.math.MoreMath.isPowerOf2;
 import static org.sellcom.core.math.MoreMath.lcm;
 import static org.sellcom.core.math.MoreMath.roundToMultiple;
 
@@ -38,6 +39,55 @@ import org.sellcom.core.internal.test.TestUtils;
 import org.sellcom.core.internal.util.RandomUtils;
 
 public class MoreMathTest {
+
+	private static final BigInteger TWO = BigInteger.valueOf(2L);
+
+
+	@Test
+	public void testIsPowerOf2_bigInteger() {
+		BigInteger nextPowerOf2 = BigInteger.ONE;
+		for (BigInteger i = BigInteger.ZERO; i.compareTo(BigInteger.valueOf(1000L)) < 0; i = i.add(BigInteger.ONE)) {
+			if (i.equals(nextPowerOf2)) {
+				assertThat(isPowerOf2(i), is(true));
+
+				nextPowerOf2 = nextPowerOf2.multiply(TWO);
+			} else {
+				assertThat(isPowerOf2(i), is(false));
+			}
+		}
+	}
+
+	@Test
+	public void testIsPowerOf2_int() {
+		int nextPowerOf2 = 1;
+		for (int i = 0; i < 1000; i++) {
+			if (i == nextPowerOf2) {
+				assertThat(isPowerOf2(i), is(true));
+
+				nextPowerOf2 *= 2;
+			} else {
+				assertThat(isPowerOf2(i), is(false));
+			}
+		}
+	}
+
+	@Test
+	public void testIsPowerOf2_long() {
+		long nextPowerOf2 = 1L;
+		for (long i = 0L; i < 1000L; i++) {
+			if (i == nextPowerOf2) {
+				assertThat(isPowerOf2(i), is(true));
+
+				nextPowerOf2 *= 2L;
+			} else {
+				assertThat(isPowerOf2(i), is(false));
+			}
+		}
+	}
+
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
 
 	@RunWith(Parameterized.class)
 	public static class ParameterizedGcdAndLcmTest_bigInteger {
