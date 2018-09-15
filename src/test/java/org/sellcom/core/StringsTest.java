@@ -21,15 +21,26 @@ import static org.junit.Assert.assertThat;
 import static org.sellcom.core.Strings.commonPrefix;
 import static org.sellcom.core.Strings.commonSuffix;
 import static org.sellcom.core.Strings.endsWith;
+import static org.sellcom.core.Strings.ensurePrefix;
+import static org.sellcom.core.Strings.ensureSuffix;
 import static org.sellcom.core.Strings.interleavePadding;
+import static org.sellcom.core.Strings.normalizeWhitespace;
 import static org.sellcom.core.Strings.padEnd;
 import static org.sellcom.core.Strings.padStart;
 import static org.sellcom.core.Strings.removePrefix;
 import static org.sellcom.core.Strings.removeSuffix;
 import static org.sellcom.core.Strings.repeat;
 import static org.sellcom.core.Strings.startsWith;
+import static org.sellcom.core.Strings.trimLeft;
+import static org.sellcom.core.Strings.trimRight;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 public class StringsTest {
 
@@ -114,6 +125,15 @@ public class StringsTest {
 	}
 
 	@Test
+	public void testNormalizeWhitespace() {
+		assertThat(normalizeWhitespace(" Republica Moldova "), is(equalTo("Republica Moldova")));
+		assertThat(normalizeWhitespace("    Republica  Moldova    "), is(equalTo("Republica Moldova")));
+		assertThat(normalizeWhitespace("\tRepublica\tMoldova\t"), is(equalTo("Republica Moldova")));
+		assertThat(normalizeWhitespace("\t\t\t\tRepublica\t\tMoldova\t\t\t\t"), is(equalTo("Republica Moldova")));
+		assertThat(normalizeWhitespace(" \t Republica \t Moldova \t "), is(equalTo("Republica Moldova")));
+	}
+
+	@Test
 	public void testPadEnd() {
 		assertThat(padEnd("42", 3, '='), is(equalTo("42=")));
 		assertThat(padEnd("42", 5, '='), is(equalTo("42===")));
@@ -127,190 +147,6 @@ public class StringsTest {
 		assertThat(padStart("42", 5, '='), is(equalTo("===42")));
 		assertThat(padStart("42", 7, '='), is(equalTo("=====42")));
 		assertThat(padStart("42", 9, '='), is(equalTo("=======42")));
-	}
-
-	@Test
-	public void testRemovePrefix() {
-		assertThat(removePrefix("afternoon", "after"), is(equalTo("noon")));
-		assertThat(removePrefix("aircraft", "air"), is(equalTo("craft")));
-		assertThat(removePrefix("airfield", "air"), is(equalTo("field")));
-		assertThat(removePrefix("airline", "air"), is(equalTo("line")));
-		assertThat(removePrefix("background", "back"), is(equalTo("ground")));
-		assertThat(removePrefix("backlog", "back"), is(equalTo("log")));
-		assertThat(removePrefix("backstage", "back"), is(equalTo("stage")));
-		assertThat(removePrefix("bagpipe", "bag"), is(equalTo("pipe")));
-		assertThat(removePrefix("become", "be"), is(equalTo("come")));
-		assertThat(removePrefix("bedclothes", "bed"), is(equalTo("clothes")));
-		assertThat(removePrefix("blackboard", "black"), is(equalTo("board")));
-		assertThat(removePrefix("blacksmith", "black"), is(equalTo("smith")));
-		assertThat(removePrefix("bluefish", "blue"), is(equalTo("fish")));
-		assertThat(removePrefix("blueprint", "blue"), is(equalTo("print")));
-		assertThat(removePrefix("bookshelf", "book"), is(equalTo("shelf")));
-		assertThat(removePrefix("buttermilk", "butter"), is(equalTo("milk")));
-		assertThat(removePrefix("catwalk", "cat"), is(equalTo("walk")));
-		assertThat(removePrefix("cheesecake", "cheese"), is(equalTo("cake")));
-		assertThat(removePrefix("clockwise", "clock"), is(equalTo("wise")));
-		assertThat(removePrefix("comeback", "come"), is(equalTo("back")));
-		assertThat(removePrefix("commonplace", "common"), is(equalTo("place")));
-		assertThat(removePrefix("counterpart", "counter"), is(equalTo("part")));
-		assertThat(removePrefix("courthouse", "court"), is(equalTo("house")));
-		assertThat(removePrefix("crossover", "cross"), is(equalTo("over")));
-		assertThat(removePrefix("deadline", "dead"), is(equalTo("line")));
-		assertThat(removePrefix("downsize", "down"), is(equalTo("size")));
-		assertThat(removePrefix("downstairs", "down"), is(equalTo("stairs")));
-		assertThat(removePrefix("driveway", "drive"), is(equalTo("way")));
-		assertThat(removePrefix("earring", "ear"), is(equalTo("ring")));
-		assertThat(removePrefix("eggshell", "egg"), is(equalTo("shell")));
-		assertThat(removePrefix("everything", "every"), is(equalTo("thing")));
-		assertThat(removePrefix("eyeball", "eye"), is(equalTo("ball")));
-		assertThat(removePrefix("foothill", "foot"), is(equalTo("hill")));
-		assertThat(removePrefix("forgive", "for"), is(equalTo("give")));
-		assertThat(removePrefix("forklift", "fork"), is(equalTo("lift")));
-		assertThat(removePrefix("friendship", "friend"), is(equalTo("ship")));
-		assertThat(removePrefix("gearshift", "gear"), is(equalTo("shift")));
-		assertThat(removePrefix("graveyard", "grave"), is(equalTo("yard")));
-		assertThat(removePrefix("handbook", "hand"), is(equalTo("book")));
-		assertThat(removePrefix("headlight", "head"), is(equalTo("light")));
-		assertThat(removePrefix("highland", "high"), is(equalTo("land")));
-		assertThat(removePrefix("hometown", "home"), is(equalTo("town")));
-		assertThat(removePrefix("honeycomb", "honey"), is(equalTo("comb")));
-		assertThat(removePrefix("honeymoon", "honey"), is(equalTo("moon")));
-		assertThat(removePrefix("keynote", "key"), is(equalTo("note")));
-		assertThat(removePrefix("keyword", "key"), is(equalTo("word")));
-		assertThat(removePrefix("lifetime", "life"), is(equalTo("time")));
-		assertThat(removePrefix("limestone", "lime"), is(equalTo("stone")));
-		assertThat(removePrefix("longhouse", "long"), is(equalTo("house")));
-		assertThat(removePrefix("mainland", "main"), is(equalTo("land")));
-		assertThat(removePrefix("mainline", "main"), is(equalTo("line")));
-		assertThat(removePrefix("meantime", "mean"), is(equalTo("time")));
-		assertThat(removePrefix("newspaper", "news"), is(equalTo("paper")));
-		assertThat(removePrefix("overflow", "over"), is(equalTo("flow")));
-		assertThat(removePrefix("pancake", "pan"), is(equalTo("cake")));
-		assertThat(removePrefix("passbook", "pass"), is(equalTo("book")));
-		assertThat(removePrefix("passport", "pass"), is(equalTo("port")));
-		assertThat(removePrefix("peppermint", "pepper"), is(equalTo("mint")));
-		assertThat(removePrefix("pinhole", "pin"), is(equalTo("hole")));
-		assertThat(removePrefix("railroad", "rail"), is(equalTo("road")));
-		assertThat(removePrefix("railway", "rail"), is(equalTo("way")));
-		assertThat(removePrefix("rainstorm", "rain"), is(equalTo("storm")));
-		assertThat(removePrefix("sailboat", "sail"), is(equalTo("boat")));
-		assertThat(removePrefix("steamboat", "steam"), is(equalTo("boat")));
-		assertThat(removePrefix("sunglasses", "sun"), is(equalTo("glasses")));
-		assertThat(removePrefix("supermarket", "super"), is(equalTo("market")));
-		assertThat(removePrefix("teapot", "tea"), is(equalTo("pot")));
-		assertThat(removePrefix("textbook", "text"), is(equalTo("book")));
-		assertThat(removePrefix("thunderbird", "thunder"), is(equalTo("bird")));
-		assertThat(removePrefix("thunderstorm", "thunder"), is(equalTo("storm")));
-		assertThat(removePrefix("township", "town"), is(equalTo("ship")));
-		assertThat(removePrefix("underbelly", "under"), is(equalTo("belly")));
-		assertThat(removePrefix("underclothes", "under"), is(equalTo("clothes")));
-		assertThat(removePrefix("undercover", "under"), is(equalTo("cover")));
-		assertThat(removePrefix("underground", "under"), is(equalTo("ground")));
-		assertThat(removePrefix("uphill", "up"), is(equalTo("hill")));
-		assertThat(removePrefix("uplink", "up"), is(equalTo("link")));
-		assertThat(removePrefix("upright", "up"), is(equalTo("right")));
-		assertThat(removePrefix("uprising", "up"), is(equalTo("rising")));
-		assertThat(removePrefix("upside", "up"), is(equalTo("side")));
-		assertThat(removePrefix("upstairs", "up"), is(equalTo("stairs")));
-		assertThat(removePrefix("uptime", "up"), is(equalTo("time")));
-		assertThat(removePrefix("upwind", "up"), is(equalTo("wind")));
-		assertThat(removePrefix("wallpaper", "wall"), is(equalTo("paper")));
-		assertThat(removePrefix("warehouse", "ware"), is(equalTo("house")));
-		assertThat(removePrefix("washroom", "wash"), is(equalTo("room")));
-		assertThat(removePrefix("wastewater", "waste"), is(equalTo("water")));
-		assertThat(removePrefix("watercolor", "water"), is(equalTo("color")));
-		assertThat(removePrefix("weekday", "week"), is(equalTo("day")));
-		assertThat(removePrefix("wheelchair", "wheel"), is(equalTo("chair")));
-	}
-
-	@Test
-	public void testRemoveSuffix() {
-		assertThat(removeSuffix("airplane", "plane"), is(equalTo("air")));
-		assertThat(removeSuffix("airport", "port"), is(equalTo("air")));
-		assertThat(removeSuffix("archangel", "angel"), is(equalTo("arch")));
-		assertThat(removeSuffix("backbone", "bone"), is(equalTo("back")));
-		assertThat(removeSuffix("backhoe", "hoe"), is(equalTo("back")));
-		assertThat(removeSuffix("backpack", "pack"), is(equalTo("back")));
-		assertThat(removeSuffix("baseball", "ball"), is(equalTo("base")));
-		assertThat(removeSuffix("basketball", "ball"), is(equalTo("basket")));
-		assertThat(removeSuffix("bedroom", "room"), is(equalTo("bed")));
-		assertThat(removeSuffix("blackbird", "bird"), is(equalTo("black")));
-		assertThat(removeSuffix("blacklist", "list"), is(equalTo("black")));
-		assertThat(removeSuffix("blackout", "out"), is(equalTo("black")));
-		assertThat(removeSuffix("blueberry", "berry"), is(equalTo("blue")));
-		assertThat(removeSuffix("boardwalk", "walk"), is(equalTo("board")));
-		assertThat(removeSuffix("bodyguard", "guard"), is(equalTo("body")));
-		assertThat(removeSuffix("bodywork", "work"), is(equalTo("body")));
-		assertThat(removeSuffix("bookcase", "case"), is(equalTo("book")));
-		assertThat(removeSuffix("bookworm", "worm"), is(equalTo("book")));
-		assertThat(removeSuffix("bootstrap", "strap"), is(equalTo("boot")));
-		assertThat(removeSuffix("candlelight", "light"), is(equalTo("candle")));
-		assertThat(removeSuffix("candlestick", "stick"), is(equalTo("candle")));
-		assertThat(removeSuffix("cardboard", "board"), is(equalTo("card")));
-		assertThat(removeSuffix("carpool", "pool"), is(equalTo("car")));
-		assertThat(removeSuffix("coffeemaker", "maker"), is(equalTo("coffee")));
-		assertThat(removeSuffix("courtyard", "yard"), is(equalTo("court")));
-		assertThat(removeSuffix("crossbow", "bow"), is(equalTo("cross")));
-		assertThat(removeSuffix("daylight", "light"), is(equalTo("day")));
-		assertThat(removeSuffix("daytime", "time"), is(equalTo("day")));
-		assertThat(removeSuffix("dishcloth", "cloth"), is(equalTo("dish")));
-		assertThat(removeSuffix("earthworm", "worm"), is(equalTo("earth")));
-		assertThat(removeSuffix("eyewitness", "witness"), is(equalTo("eye")));
-		assertThat(removeSuffix("firefighter", "fighter"), is(equalTo("fire")));
-		assertThat(removeSuffix("footnote", "note"), is(equalTo("foot")));
-		assertThat(removeSuffix("footprint", "print"), is(equalTo("foot")));
-		assertThat(removeSuffix("glassmaker", "maker"), is(equalTo("glass")));
-		assertThat(removeSuffix("grasshopper", "hopper"), is(equalTo("grass")));
-		assertThat(removeSuffix("haircut", "cut"), is(equalTo("hair")));
-		assertThat(removeSuffix("handgun", "gun"), is(equalTo("hand")));
-		assertThat(removeSuffix("handmade", "made"), is(equalTo("hand")));
-		assertThat(removeSuffix("headache", "ache"), is(equalTo("head")));
-		assertThat(removeSuffix("herein", "in"), is(equalTo("here")));
-		assertThat(removeSuffix("highway", "way"), is(equalTo("high")));
-		assertThat(removeSuffix("homemade", "made"), is(equalTo("home")));
-		assertThat(removeSuffix("horseback", "back"), is(equalTo("horse")));
-		assertThat(removeSuffix("horsepower", "power"), is(equalTo("horse")));
-		assertThat(removeSuffix("housework", "work"), is(equalTo("house")));
-		assertThat(removeSuffix("keyboard", "board"), is(equalTo("key")));
-		assertThat(removeSuffix("keyhole", "hole"), is(equalTo("key")));
-		assertThat(removeSuffix("lifeboat", "boat"), is(equalTo("life")));
-		assertThat(removeSuffix("lifeguard", "guard"), is(equalTo("life")));
-		assertThat(removeSuffix("matchbox", "box"), is(equalTo("match")));
-		assertThat(removeSuffix("moonlight", "light"), is(equalTo("moon")));
-		assertThat(removeSuffix("motherhood", "hood"), is(equalTo("mother")));
-		assertThat(removeSuffix("nearby", "by"), is(equalTo("near")));
-		assertThat(removeSuffix("oneself", "self"), is(equalTo("one")));
-		assertThat(removeSuffix("rainbow", "bow"), is(equalTo("rain")));
-		assertThat(removeSuffix("raincoat", "coat"), is(equalTo("rain")));
-		assertThat(removeSuffix("raindrop", "drop"), is(equalTo("rain")));
-		assertThat(removeSuffix("sandstone", "stone"), is(equalTo("sand")));
-		assertThat(removeSuffix("schoolhouse", "house"), is(equalTo("school")));
-		assertThat(removeSuffix("seashore", "shore"), is(equalTo("sea")));
-		assertThat(removeSuffix("shoemaker", "maker"), is(equalTo("shoe")));
-		assertThat(removeSuffix("sidewalk", "walk"), is(equalTo("side")));
-		assertThat(removeSuffix("silversmith", "smith"), is(equalTo("silver")));
-		assertThat(removeSuffix("skyscraper", "scraper"), is(equalTo("sky")));
-		assertThat(removeSuffix("snowball", "ball"), is(equalTo("snow")));
-		assertThat(removeSuffix("snowdrift", "drift"), is(equalTo("snow")));
-		assertThat(removeSuffix("something", "thing"), is(equalTo("some")));
-		assertThat(removeSuffix("soundproof", "proof"), is(equalTo("sound")));
-		assertThat(removeSuffix("sundial", "dial"), is(equalTo("sun")));
-		assertThat(removeSuffix("sunflower", "flower"), is(equalTo("sun")));
-		assertThat(removeSuffix("tablecloth", "cloth"), is(equalTo("table")));
-		assertThat(removeSuffix("timetable", "table"), is(equalTo("time")));
-		assertThat(removeSuffix("toolbox", "box"), is(equalTo("tool")));
-		assertThat(removeSuffix("underpass", "pass"), is(equalTo("under")));
-		assertThat(removeSuffix("uplift", "lift"), is(equalTo("up")));
-		assertThat(removeSuffix("washcloth", "cloth"), is(equalTo("wash")));
-		assertThat(removeSuffix("wasteland", "land"), is(equalTo("waste")));
-		assertThat(removeSuffix("watchmaker", "maker"), is(equalTo("watch")));
-		assertThat(removeSuffix("watermark", "mark"), is(equalTo("water")));
-		assertThat(removeSuffix("waterproof", "proof"), is(equalTo("water")));
-		assertThat(removeSuffix("watershed", "shed"), is(equalTo("water")));
-		assertThat(removeSuffix("waterway", "way"), is(equalTo("water")));
-		assertThat(removeSuffix("weatherproof", "proof"), is(equalTo("weather")));
-		assertThat(removeSuffix("weekend", "end"), is(equalTo("week")));
-		assertThat(removeSuffix("wheelbarrow", "barrow"), is(equalTo("wheel")));
 	}
 
 	@Test
@@ -346,6 +182,964 @@ public class StringsTest {
 		assertThat(startsWith("DownWind", "down", true), is(true));
 		assertThat(startsWith("UpWind", "up", false), is(false));
 		assertThat(startsWith("UpWind", "up", true), is(true));
+	}
+
+	@Test
+	public void testTrimLeft() {
+		assertThat(trimLeft("\t \r \n Independence Day \t \r \n"), is(equalTo("Independence Day \t \r \n")));
+	}
+
+	@Test
+	public void testTrimRight() {
+		assertThat(trimRight("\t \r \n Independence Day \t \r \n"), is(equalTo("\t \r \n Independence Day")));
+	}
+
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+
+	@RunWith(Parameterized.class)
+	public static class EnsurePrefixTest {
+
+		private final String expectedResult;
+
+		private final String original;
+
+		private final String prefix;
+
+
+		public EnsurePrefixTest(ParameterValues values) {
+			original = values.getStem();
+			prefix = values.getPrefix();
+			expectedResult = prefix + original;
+		}
+
+
+		@Parameters
+		public static Collection<ParameterValues> parameters() {
+			return Arrays.asList(new ParameterValues[] {
+					new ParameterValues("after", "noon"),
+					new ParameterValues("air", "craft"),
+					new ParameterValues("air", "field"),
+					new ParameterValues("air", "line"),
+					new ParameterValues("air", "plane"),
+					new ParameterValues("air", "port"),
+					new ParameterValues("arch", "angel"),
+					new ParameterValues("back", "bone"),
+					new ParameterValues("back", "ground"),
+					new ParameterValues("back", "hoe"),
+					new ParameterValues("back", "log"),
+					new ParameterValues("back", "pack"),
+					new ParameterValues("back", "stage"),
+					new ParameterValues("bag", "pipe"),
+					new ParameterValues("base", "ball"),
+					new ParameterValues("basket", "ball"),
+					new ParameterValues("be", "come"),
+					new ParameterValues("bed", "clothes"),
+					new ParameterValues("bed", "room"),
+					new ParameterValues("black", "bird"),
+					new ParameterValues("black", "board"),
+					new ParameterValues("black", "list"),
+					new ParameterValues("black", "out"),
+					new ParameterValues("black", "smith"),
+					new ParameterValues("blue", "berry"),
+					new ParameterValues("blue", "fish"),
+					new ParameterValues("blue", "print"),
+					new ParameterValues("board", "walk"),
+					new ParameterValues("body", "guard"),
+					new ParameterValues("body", "work"),
+					new ParameterValues("book", "case"),
+					new ParameterValues("book", "shelf"),
+					new ParameterValues("book", "worm"),
+					new ParameterValues("boot", "strap"),
+					new ParameterValues("butter", "milk"),
+					new ParameterValues("candle", "light"),
+					new ParameterValues("candle", "stick"),
+					new ParameterValues("car", "pool"),
+					new ParameterValues("card", "board"),
+					new ParameterValues("cat", "walk"),
+					new ParameterValues("cheese", "cake"),
+					new ParameterValues("clock", "wise"),
+					new ParameterValues("coffee", "maker"),
+					new ParameterValues("come", "back"),
+					new ParameterValues("common", "place"),
+					new ParameterValues("counter", "part"),
+					new ParameterValues("court", "house"),
+					new ParameterValues("court", "yard"),
+					new ParameterValues("cross", "bow"),
+					new ParameterValues("cross", "over"),
+					new ParameterValues("day", "light"),
+					new ParameterValues("day", "time"),
+					new ParameterValues("dead", "line"),
+					new ParameterValues("dish", "cloth"),
+					new ParameterValues("down", "size"),
+					new ParameterValues("down", "stairs"),
+					new ParameterValues("drive", "way"),
+					new ParameterValues("ear", "ring"),
+					new ParameterValues("earth", "worm"),
+					new ParameterValues("egg", "shell"),
+					new ParameterValues("every", "thing"),
+					new ParameterValues("eye", "ball"),
+					new ParameterValues("eye", "witness"),
+					new ParameterValues("fire", "fighter"),
+					new ParameterValues("foot", "hill"),
+					new ParameterValues("foot", "note"),
+					new ParameterValues("foot", "print"),
+					new ParameterValues("for", "give"),
+					new ParameterValues("fork", "lift"),
+					new ParameterValues("friend", "ship"),
+					new ParameterValues("gear", "shift"),
+					new ParameterValues("glass", "maker"),
+					new ParameterValues("grass", "hopper"),
+					new ParameterValues("grave", "yard"),
+					new ParameterValues("hair", "cut"),
+					new ParameterValues("hand", "book"),
+					new ParameterValues("hand", "gun"),
+					new ParameterValues("hand", "made"),
+					new ParameterValues("head", "ache"),
+					new ParameterValues("head", "light"),
+					new ParameterValues("here", "in"),
+					new ParameterValues("high", "land"),
+					new ParameterValues("high", "way"),
+					new ParameterValues("home", "made"),
+					new ParameterValues("home", "town"),
+					new ParameterValues("honey", "comb"),
+					new ParameterValues("honey", "moon"),
+					new ParameterValues("horse", "back"),
+					new ParameterValues("horse", "power"),
+					new ParameterValues("house", "work"),
+					new ParameterValues("key", "board"),
+					new ParameterValues("key", "hole"),
+					new ParameterValues("key", "note"),
+					new ParameterValues("key", "word"),
+					new ParameterValues("life", "boat"),
+					new ParameterValues("life", "guard"),
+					new ParameterValues("life", "time"),
+					new ParameterValues("lime", "stone"),
+					new ParameterValues("long", "house"),
+					new ParameterValues("main", "land"),
+					new ParameterValues("main", "line"),
+					new ParameterValues("match", "box"),
+					new ParameterValues("mean", "time"),
+					new ParameterValues("moon", "light"),
+					new ParameterValues("mother", "hood"),
+					new ParameterValues("near", "by"),
+					new ParameterValues("news", "paper"),
+					new ParameterValues("one", "self"),
+					new ParameterValues("over", "flow"),
+					new ParameterValues("pan", "cake"),
+					new ParameterValues("pass", "book"),
+					new ParameterValues("pass", "port"),
+					new ParameterValues("pepper", "mint"),
+					new ParameterValues("pin", "hole"),
+					new ParameterValues("rail", "road"),
+					new ParameterValues("rail", "way"),
+					new ParameterValues("rain", "bow"),
+					new ParameterValues("rain", "coat"),
+					new ParameterValues("rain", "drop"),
+					new ParameterValues("rain", "storm"),
+					new ParameterValues("sail", "boat"),
+					new ParameterValues("sand", "stone"),
+					new ParameterValues("school", "house"),
+					new ParameterValues("sea", "shore"),
+					new ParameterValues("shoe", "maker"),
+					new ParameterValues("side", "walk"),
+					new ParameterValues("silver", "smith"),
+					new ParameterValues("sky", "scraper"),
+					new ParameterValues("snow", "ball"),
+					new ParameterValues("snow", "drift"),
+					new ParameterValues("some", "thing"),
+					new ParameterValues("sound", "proof"),
+					new ParameterValues("steam", "boat"),
+					new ParameterValues("sun", "dial"),
+					new ParameterValues("sun", "flower"),
+					new ParameterValues("sun", "glasses"),
+					new ParameterValues("super", "market"),
+					new ParameterValues("table", "cloth"),
+					new ParameterValues("tea", "pot"),
+					new ParameterValues("text", "book"),
+					new ParameterValues("thunder", "bird"),
+					new ParameterValues("thunder", "storm"),
+					new ParameterValues("time", "table"),
+					new ParameterValues("tool", "box"),
+					new ParameterValues("town", "ship"),
+					new ParameterValues("under", "belly"),
+					new ParameterValues("under", "clothes"),
+					new ParameterValues("under", "cover"),
+					new ParameterValues("under", "ground"),
+					new ParameterValues("under", "pass"),
+					new ParameterValues("up", "hill"),
+					new ParameterValues("up", "lift"),
+					new ParameterValues("up", "link"),
+					new ParameterValues("up", "right"),
+					new ParameterValues("up", "rising"),
+					new ParameterValues("up", "side"),
+					new ParameterValues("up", "stairs"),
+					new ParameterValues("up", "time"),
+					new ParameterValues("up", "wind"),
+					new ParameterValues("wall", "paper"),
+					new ParameterValues("ware", "house"),
+					new ParameterValues("wash", "cloth"),
+					new ParameterValues("wash", "room"),
+					new ParameterValues("waste", "land"),
+					new ParameterValues("waste", "water"),
+					new ParameterValues("watch", "maker"),
+					new ParameterValues("water", "color"),
+					new ParameterValues("water", "mark"),
+					new ParameterValues("water", "proof"),
+					new ParameterValues("water", "shed"),
+					new ParameterValues("water", "way"),
+					new ParameterValues("weather", "proof"),
+					new ParameterValues("week", "day"),
+					new ParameterValues("week", "end"),
+					new ParameterValues("wheel", "barrow"),
+					new ParameterValues("wheel", "chair"),
+			});
+		}
+
+		@Test
+		public void test() {
+			assertThat(ensurePrefix(original, prefix), is(equalTo(expectedResult)));
+		}
+
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+
+		private static class ParameterValues {
+
+			private final String prefix;
+
+			private final String stem;
+
+
+			public ParameterValues(String prefix, String stem) {
+				this.prefix = prefix;
+				this.stem = stem;
+			}
+
+
+			public String getStem() {
+				return stem;
+			}
+
+			public String getPrefix() {
+				return prefix;
+			}
+
+		}
+
+	}
+
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+
+	@RunWith(Parameterized.class)
+	public static class EnsureSuffixTest {
+
+		private final String expectedResult;
+
+		private final String original;
+
+		private final String suffix;
+
+
+		public EnsureSuffixTest(ParameterValues values) {
+			original = values.getStem();
+			suffix = values.getSuffix();
+			expectedResult = original + suffix;
+		}
+
+
+		@Parameters
+		public static Collection<ParameterValues> parameters() {
+			return Arrays.asList(new ParameterValues[] {
+				new ParameterValues("after", "noon"),
+				new ParameterValues("air", "craft"),
+				new ParameterValues("air", "field"),
+				new ParameterValues("air", "line"),
+				new ParameterValues("air", "plane"),
+				new ParameterValues("air", "port"),
+				new ParameterValues("arch", "angel"),
+				new ParameterValues("back", "bone"),
+				new ParameterValues("back", "ground"),
+				new ParameterValues("back", "hoe"),
+				new ParameterValues("back", "log"),
+				new ParameterValues("back", "pack"),
+				new ParameterValues("back", "stage"),
+				new ParameterValues("bag", "pipe"),
+				new ParameterValues("base", "ball"),
+				new ParameterValues("basket", "ball"),
+				new ParameterValues("be", "come"),
+				new ParameterValues("bed", "clothes"),
+				new ParameterValues("bed", "room"),
+				new ParameterValues("black", "bird"),
+				new ParameterValues("black", "board"),
+				new ParameterValues("black", "list"),
+				new ParameterValues("black", "out"),
+				new ParameterValues("black", "smith"),
+				new ParameterValues("blue", "berry"),
+				new ParameterValues("blue", "fish"),
+				new ParameterValues("blue", "print"),
+				new ParameterValues("board", "walk"),
+				new ParameterValues("body", "guard"),
+				new ParameterValues("body", "work"),
+				new ParameterValues("book", "case"),
+				new ParameterValues("book", "shelf"),
+				new ParameterValues("book", "worm"),
+				new ParameterValues("boot", "strap"),
+				new ParameterValues("butter", "milk"),
+				new ParameterValues("candle", "light"),
+				new ParameterValues("candle", "stick"),
+				new ParameterValues("car", "pool"),
+				new ParameterValues("card", "board"),
+				new ParameterValues("cat", "walk"),
+				new ParameterValues("cheese", "cake"),
+				new ParameterValues("clock", "wise"),
+				new ParameterValues("coffee", "maker"),
+				new ParameterValues("come", "back"),
+				new ParameterValues("common", "place"),
+				new ParameterValues("counter", "part"),
+				new ParameterValues("court", "house"),
+				new ParameterValues("court", "yard"),
+				new ParameterValues("cross", "bow"),
+				new ParameterValues("cross", "over"),
+				new ParameterValues("day", "light"),
+				new ParameterValues("day", "time"),
+				new ParameterValues("dead", "line"),
+				new ParameterValues("dish", "cloth"),
+				new ParameterValues("down", "size"),
+				new ParameterValues("down", "stairs"),
+				new ParameterValues("drive", "way"),
+				new ParameterValues("ear", "ring"),
+				new ParameterValues("earth", "worm"),
+				new ParameterValues("egg", "shell"),
+				new ParameterValues("every", "thing"),
+				new ParameterValues("eye", "ball"),
+				new ParameterValues("eye", "witness"),
+				new ParameterValues("fire", "fighter"),
+				new ParameterValues("foot", "hill"),
+				new ParameterValues("foot", "note"),
+				new ParameterValues("foot", "print"),
+				new ParameterValues("for", "give"),
+				new ParameterValues("fork", "lift"),
+				new ParameterValues("friend", "ship"),
+				new ParameterValues("gear", "shift"),
+				new ParameterValues("glass", "maker"),
+				new ParameterValues("grass", "hopper"),
+				new ParameterValues("grave", "yard"),
+				new ParameterValues("hair", "cut"),
+				new ParameterValues("hand", "book"),
+				new ParameterValues("hand", "gun"),
+				new ParameterValues("hand", "made"),
+				new ParameterValues("head", "ache"),
+				new ParameterValues("head", "light"),
+				new ParameterValues("here", "in"),
+				new ParameterValues("high", "land"),
+				new ParameterValues("high", "way"),
+				new ParameterValues("home", "made"),
+				new ParameterValues("home", "town"),
+				new ParameterValues("honey", "comb"),
+				new ParameterValues("honey", "moon"),
+				new ParameterValues("horse", "back"),
+				new ParameterValues("horse", "power"),
+				new ParameterValues("house", "work"),
+				new ParameterValues("key", "board"),
+				new ParameterValues("key", "hole"),
+				new ParameterValues("key", "note"),
+				new ParameterValues("key", "word"),
+				new ParameterValues("life", "boat"),
+				new ParameterValues("life", "guard"),
+				new ParameterValues("life", "time"),
+				new ParameterValues("lime", "stone"),
+				new ParameterValues("long", "house"),
+				new ParameterValues("main", "land"),
+				new ParameterValues("main", "line"),
+				new ParameterValues("match", "box"),
+				new ParameterValues("mean", "time"),
+				new ParameterValues("moon", "light"),
+				new ParameterValues("mother", "hood"),
+				new ParameterValues("near", "by"),
+				new ParameterValues("news", "paper"),
+				new ParameterValues("one", "self"),
+				new ParameterValues("over", "flow"),
+				new ParameterValues("pan", "cake"),
+				new ParameterValues("pass", "book"),
+				new ParameterValues("pass", "port"),
+				new ParameterValues("pepper", "mint"),
+				new ParameterValues("pin", "hole"),
+				new ParameterValues("rail", "road"),
+				new ParameterValues("rail", "way"),
+				new ParameterValues("rain", "bow"),
+				new ParameterValues("rain", "coat"),
+				new ParameterValues("rain", "drop"),
+				new ParameterValues("rain", "storm"),
+				new ParameterValues("sail", "boat"),
+				new ParameterValues("sand", "stone"),
+				new ParameterValues("school", "house"),
+				new ParameterValues("sea", "shore"),
+				new ParameterValues("shoe", "maker"),
+				new ParameterValues("side", "walk"),
+				new ParameterValues("silver", "smith"),
+				new ParameterValues("sky", "scraper"),
+				new ParameterValues("snow", "ball"),
+				new ParameterValues("snow", "drift"),
+				new ParameterValues("some", "thing"),
+				new ParameterValues("sound", "proof"),
+				new ParameterValues("steam", "boat"),
+				new ParameterValues("sun", "dial"),
+				new ParameterValues("sun", "flower"),
+				new ParameterValues("sun", "glasses"),
+				new ParameterValues("super", "market"),
+				new ParameterValues("table", "cloth"),
+				new ParameterValues("tea", "pot"),
+				new ParameterValues("text", "book"),
+				new ParameterValues("thunder", "bird"),
+				new ParameterValues("thunder", "storm"),
+				new ParameterValues("time", "table"),
+				new ParameterValues("tool", "box"),
+				new ParameterValues("town", "ship"),
+				new ParameterValues("under", "belly"),
+				new ParameterValues("under", "clothes"),
+				new ParameterValues("under", "cover"),
+				new ParameterValues("under", "ground"),
+				new ParameterValues("under", "pass"),
+				new ParameterValues("up", "hill"),
+				new ParameterValues("up", "lift"),
+				new ParameterValues("up", "link"),
+				new ParameterValues("up", "right"),
+				new ParameterValues("up", "rising"),
+				new ParameterValues("up", "side"),
+				new ParameterValues("up", "stairs"),
+				new ParameterValues("up", "time"),
+				new ParameterValues("up", "wind"),
+				new ParameterValues("wall", "paper"),
+				new ParameterValues("ware", "house"),
+				new ParameterValues("wash", "cloth"),
+				new ParameterValues("wash", "room"),
+				new ParameterValues("waste", "land"),
+				new ParameterValues("waste", "water"),
+				new ParameterValues("watch", "maker"),
+				new ParameterValues("water", "color"),
+				new ParameterValues("water", "mark"),
+				new ParameterValues("water", "proof"),
+				new ParameterValues("water", "shed"),
+				new ParameterValues("water", "way"),
+				new ParameterValues("weather", "proof"),
+				new ParameterValues("week", "day"),
+				new ParameterValues("week", "end"),
+				new ParameterValues("wheel", "barrow"),
+				new ParameterValues("wheel", "chair"),
+			});
+		}
+
+		@Test
+		public void test() {
+			assertThat(ensureSuffix(original, suffix), is(equalTo(expectedResult)));
+		}
+
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+
+		private static class ParameterValues {
+
+			private final String stem;
+
+			private final String suffix;
+
+
+			public ParameterValues(String stem, String suffix) {
+				this.stem = stem;
+				this.suffix = suffix;
+			}
+
+
+			public String getStem() {
+				return stem;
+			}
+
+			public String getSuffix() {
+				return suffix;
+			}
+
+		}
+
+	}
+
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+
+	@RunWith(Parameterized.class)
+	public static class RemovePrefixTest {
+
+		private final String expectedResult;
+
+		private final String original;
+
+		private final String prefix;
+
+
+		public RemovePrefixTest(ParameterValues values) {
+			prefix = values.getPrefix();
+			expectedResult = values.getStem();
+			original = prefix + expectedResult;
+		}
+
+
+		@Parameters
+		public static Collection<ParameterValues> parameters() {
+			return Arrays.asList(new ParameterValues[] {
+					new ParameterValues("after", "noon"),
+					new ParameterValues("air", "craft"),
+					new ParameterValues("air", "field"),
+					new ParameterValues("air", "line"),
+					new ParameterValues("air", "plane"),
+					new ParameterValues("air", "port"),
+					new ParameterValues("arch", "angel"),
+					new ParameterValues("back", "bone"),
+					new ParameterValues("back", "ground"),
+					new ParameterValues("back", "hoe"),
+					new ParameterValues("back", "log"),
+					new ParameterValues("back", "pack"),
+					new ParameterValues("back", "stage"),
+					new ParameterValues("bag", "pipe"),
+					new ParameterValues("base", "ball"),
+					new ParameterValues("basket", "ball"),
+					new ParameterValues("be", "come"),
+					new ParameterValues("bed", "clothes"),
+					new ParameterValues("bed", "room"),
+					new ParameterValues("black", "bird"),
+					new ParameterValues("black", "board"),
+					new ParameterValues("black", "list"),
+					new ParameterValues("black", "out"),
+					new ParameterValues("black", "smith"),
+					new ParameterValues("blue", "berry"),
+					new ParameterValues("blue", "fish"),
+					new ParameterValues("blue", "print"),
+					new ParameterValues("board", "walk"),
+					new ParameterValues("body", "guard"),
+					new ParameterValues("body", "work"),
+					new ParameterValues("book", "case"),
+					new ParameterValues("book", "shelf"),
+					new ParameterValues("book", "worm"),
+					new ParameterValues("boot", "strap"),
+					new ParameterValues("butter", "milk"),
+					new ParameterValues("candle", "light"),
+					new ParameterValues("candle", "stick"),
+					new ParameterValues("car", "pool"),
+					new ParameterValues("card", "board"),
+					new ParameterValues("cat", "walk"),
+					new ParameterValues("cheese", "cake"),
+					new ParameterValues("clock", "wise"),
+					new ParameterValues("coffee", "maker"),
+					new ParameterValues("come", "back"),
+					new ParameterValues("common", "place"),
+					new ParameterValues("counter", "part"),
+					new ParameterValues("court", "house"),
+					new ParameterValues("court", "yard"),
+					new ParameterValues("cross", "bow"),
+					new ParameterValues("cross", "over"),
+					new ParameterValues("day", "light"),
+					new ParameterValues("day", "time"),
+					new ParameterValues("dead", "line"),
+					new ParameterValues("dish", "cloth"),
+					new ParameterValues("down", "size"),
+					new ParameterValues("down", "stairs"),
+					new ParameterValues("drive", "way"),
+					new ParameterValues("ear", "ring"),
+					new ParameterValues("earth", "worm"),
+					new ParameterValues("egg", "shell"),
+					new ParameterValues("every", "thing"),
+					new ParameterValues("eye", "ball"),
+					new ParameterValues("eye", "witness"),
+					new ParameterValues("fire", "fighter"),
+					new ParameterValues("foot", "hill"),
+					new ParameterValues("foot", "note"),
+					new ParameterValues("foot", "print"),
+					new ParameterValues("for", "give"),
+					new ParameterValues("fork", "lift"),
+					new ParameterValues("friend", "ship"),
+					new ParameterValues("gear", "shift"),
+					new ParameterValues("glass", "maker"),
+					new ParameterValues("grass", "hopper"),
+					new ParameterValues("grave", "yard"),
+					new ParameterValues("hair", "cut"),
+					new ParameterValues("hand", "book"),
+					new ParameterValues("hand", "gun"),
+					new ParameterValues("hand", "made"),
+					new ParameterValues("head", "ache"),
+					new ParameterValues("head", "light"),
+					new ParameterValues("here", "in"),
+					new ParameterValues("high", "land"),
+					new ParameterValues("high", "way"),
+					new ParameterValues("home", "made"),
+					new ParameterValues("home", "town"),
+					new ParameterValues("honey", "comb"),
+					new ParameterValues("honey", "moon"),
+					new ParameterValues("horse", "back"),
+					new ParameterValues("horse", "power"),
+					new ParameterValues("house", "work"),
+					new ParameterValues("key", "board"),
+					new ParameterValues("key", "hole"),
+					new ParameterValues("key", "note"),
+					new ParameterValues("key", "word"),
+					new ParameterValues("life", "boat"),
+					new ParameterValues("life", "guard"),
+					new ParameterValues("life", "time"),
+					new ParameterValues("lime", "stone"),
+					new ParameterValues("long", "house"),
+					new ParameterValues("main", "land"),
+					new ParameterValues("main", "line"),
+					new ParameterValues("match", "box"),
+					new ParameterValues("mean", "time"),
+					new ParameterValues("moon", "light"),
+					new ParameterValues("mother", "hood"),
+					new ParameterValues("near", "by"),
+					new ParameterValues("news", "paper"),
+					new ParameterValues("one", "self"),
+					new ParameterValues("over", "flow"),
+					new ParameterValues("pan", "cake"),
+					new ParameterValues("pass", "book"),
+					new ParameterValues("pass", "port"),
+					new ParameterValues("pepper", "mint"),
+					new ParameterValues("pin", "hole"),
+					new ParameterValues("rail", "road"),
+					new ParameterValues("rail", "way"),
+					new ParameterValues("rain", "bow"),
+					new ParameterValues("rain", "coat"),
+					new ParameterValues("rain", "drop"),
+					new ParameterValues("rain", "storm"),
+					new ParameterValues("sail", "boat"),
+					new ParameterValues("sand", "stone"),
+					new ParameterValues("school", "house"),
+					new ParameterValues("sea", "shore"),
+					new ParameterValues("shoe", "maker"),
+					new ParameterValues("side", "walk"),
+					new ParameterValues("silver", "smith"),
+					new ParameterValues("sky", "scraper"),
+					new ParameterValues("snow", "ball"),
+					new ParameterValues("snow", "drift"),
+					new ParameterValues("some", "thing"),
+					new ParameterValues("sound", "proof"),
+					new ParameterValues("steam", "boat"),
+					new ParameterValues("sun", "dial"),
+					new ParameterValues("sun", "flower"),
+					new ParameterValues("sun", "glasses"),
+					new ParameterValues("super", "market"),
+					new ParameterValues("table", "cloth"),
+					new ParameterValues("tea", "pot"),
+					new ParameterValues("text", "book"),
+					new ParameterValues("thunder", "bird"),
+					new ParameterValues("thunder", "storm"),
+					new ParameterValues("time", "table"),
+					new ParameterValues("tool", "box"),
+					new ParameterValues("town", "ship"),
+					new ParameterValues("under", "belly"),
+					new ParameterValues("under", "clothes"),
+					new ParameterValues("under", "cover"),
+					new ParameterValues("under", "ground"),
+					new ParameterValues("under", "pass"),
+					new ParameterValues("up", "hill"),
+					new ParameterValues("up", "lift"),
+					new ParameterValues("up", "link"),
+					new ParameterValues("up", "right"),
+					new ParameterValues("up", "rising"),
+					new ParameterValues("up", "side"),
+					new ParameterValues("up", "stairs"),
+					new ParameterValues("up", "time"),
+					new ParameterValues("up", "wind"),
+					new ParameterValues("wall", "paper"),
+					new ParameterValues("ware", "house"),
+					new ParameterValues("wash", "cloth"),
+					new ParameterValues("wash", "room"),
+					new ParameterValues("waste", "land"),
+					new ParameterValues("waste", "water"),
+					new ParameterValues("watch", "maker"),
+					new ParameterValues("water", "color"),
+					new ParameterValues("water", "mark"),
+					new ParameterValues("water", "proof"),
+					new ParameterValues("water", "shed"),
+					new ParameterValues("water", "way"),
+					new ParameterValues("weather", "proof"),
+					new ParameterValues("week", "day"),
+					new ParameterValues("week", "end"),
+					new ParameterValues("wheel", "barrow"),
+					new ParameterValues("wheel", "chair"),
+			});
+		}
+
+		@Test
+		public void test() {
+			assertThat(removePrefix(original, prefix), is(equalTo(expectedResult)));
+		}
+
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+
+		private static class ParameterValues {
+
+			private final String prefix;
+
+			private final String stem;
+
+
+			public ParameterValues(String prefix, String stem) {
+				this.prefix = prefix;
+				this.stem = stem;
+			}
+
+
+			public String getStem() {
+				return stem;
+			}
+
+			public String getPrefix() {
+				return prefix;
+			}
+
+		}
+
+	}
+
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+	// ------------------------------------------------------------
+
+	@RunWith(Parameterized.class)
+	public static class RemoveSuffixTest {
+
+		private final String expectedResult;
+
+		private final String original;
+
+		private final String suffix;
+
+
+		public RemoveSuffixTest(ParameterValues values) {
+			suffix = values.getSuffix();
+			expectedResult = values.getStem();
+			original = expectedResult + suffix;
+		}
+
+
+		@Parameters
+		public static Collection<ParameterValues> parameters() {
+			return Arrays.asList(new ParameterValues[] {
+				new ParameterValues("after", "noon"),
+				new ParameterValues("air", "craft"),
+				new ParameterValues("air", "field"),
+				new ParameterValues("air", "line"),
+				new ParameterValues("air", "plane"),
+				new ParameterValues("air", "port"),
+				new ParameterValues("arch", "angel"),
+				new ParameterValues("back", "bone"),
+				new ParameterValues("back", "ground"),
+				new ParameterValues("back", "hoe"),
+				new ParameterValues("back", "log"),
+				new ParameterValues("back", "pack"),
+				new ParameterValues("back", "stage"),
+				new ParameterValues("bag", "pipe"),
+				new ParameterValues("base", "ball"),
+				new ParameterValues("basket", "ball"),
+				new ParameterValues("be", "come"),
+				new ParameterValues("bed", "clothes"),
+				new ParameterValues("bed", "room"),
+				new ParameterValues("black", "bird"),
+				new ParameterValues("black", "board"),
+				new ParameterValues("black", "list"),
+				new ParameterValues("black", "out"),
+				new ParameterValues("black", "smith"),
+				new ParameterValues("blue", "berry"),
+				new ParameterValues("blue", "fish"),
+				new ParameterValues("blue", "print"),
+				new ParameterValues("board", "walk"),
+				new ParameterValues("body", "guard"),
+				new ParameterValues("body", "work"),
+				new ParameterValues("book", "case"),
+				new ParameterValues("book", "shelf"),
+				new ParameterValues("book", "worm"),
+				new ParameterValues("boot", "strap"),
+				new ParameterValues("butter", "milk"),
+				new ParameterValues("candle", "light"),
+				new ParameterValues("candle", "stick"),
+				new ParameterValues("car", "pool"),
+				new ParameterValues("card", "board"),
+				new ParameterValues("cat", "walk"),
+				new ParameterValues("cheese", "cake"),
+				new ParameterValues("clock", "wise"),
+				new ParameterValues("coffee", "maker"),
+				new ParameterValues("come", "back"),
+				new ParameterValues("common", "place"),
+				new ParameterValues("counter", "part"),
+				new ParameterValues("court", "house"),
+				new ParameterValues("court", "yard"),
+				new ParameterValues("cross", "bow"),
+				new ParameterValues("cross", "over"),
+				new ParameterValues("day", "light"),
+				new ParameterValues("day", "time"),
+				new ParameterValues("dead", "line"),
+				new ParameterValues("dish", "cloth"),
+				new ParameterValues("down", "size"),
+				new ParameterValues("down", "stairs"),
+				new ParameterValues("drive", "way"),
+				new ParameterValues("ear", "ring"),
+				new ParameterValues("earth", "worm"),
+				new ParameterValues("egg", "shell"),
+				new ParameterValues("every", "thing"),
+				new ParameterValues("eye", "ball"),
+				new ParameterValues("eye", "witness"),
+				new ParameterValues("fire", "fighter"),
+				new ParameterValues("foot", "hill"),
+				new ParameterValues("foot", "note"),
+				new ParameterValues("foot", "print"),
+				new ParameterValues("for", "give"),
+				new ParameterValues("fork", "lift"),
+				new ParameterValues("friend", "ship"),
+				new ParameterValues("gear", "shift"),
+				new ParameterValues("glass", "maker"),
+				new ParameterValues("grass", "hopper"),
+				new ParameterValues("grave", "yard"),
+				new ParameterValues("hair", "cut"),
+				new ParameterValues("hand", "book"),
+				new ParameterValues("hand", "gun"),
+				new ParameterValues("hand", "made"),
+				new ParameterValues("head", "ache"),
+				new ParameterValues("head", "light"),
+				new ParameterValues("here", "in"),
+				new ParameterValues("high", "land"),
+				new ParameterValues("high", "way"),
+				new ParameterValues("home", "made"),
+				new ParameterValues("home", "town"),
+				new ParameterValues("honey", "comb"),
+				new ParameterValues("honey", "moon"),
+				new ParameterValues("horse", "back"),
+				new ParameterValues("horse", "power"),
+				new ParameterValues("house", "work"),
+				new ParameterValues("key", "board"),
+				new ParameterValues("key", "hole"),
+				new ParameterValues("key", "note"),
+				new ParameterValues("key", "word"),
+				new ParameterValues("life", "boat"),
+				new ParameterValues("life", "guard"),
+				new ParameterValues("life", "time"),
+				new ParameterValues("lime", "stone"),
+				new ParameterValues("long", "house"),
+				new ParameterValues("main", "land"),
+				new ParameterValues("main", "line"),
+				new ParameterValues("match", "box"),
+				new ParameterValues("mean", "time"),
+				new ParameterValues("moon", "light"),
+				new ParameterValues("mother", "hood"),
+				new ParameterValues("near", "by"),
+				new ParameterValues("news", "paper"),
+				new ParameterValues("one", "self"),
+				new ParameterValues("over", "flow"),
+				new ParameterValues("pan", "cake"),
+				new ParameterValues("pass", "book"),
+				new ParameterValues("pass", "port"),
+				new ParameterValues("pepper", "mint"),
+				new ParameterValues("pin", "hole"),
+				new ParameterValues("rail", "road"),
+				new ParameterValues("rail", "way"),
+				new ParameterValues("rain", "bow"),
+				new ParameterValues("rain", "coat"),
+				new ParameterValues("rain", "drop"),
+				new ParameterValues("rain", "storm"),
+				new ParameterValues("sail", "boat"),
+				new ParameterValues("sand", "stone"),
+				new ParameterValues("school", "house"),
+				new ParameterValues("sea", "shore"),
+				new ParameterValues("shoe", "maker"),
+				new ParameterValues("side", "walk"),
+				new ParameterValues("silver", "smith"),
+				new ParameterValues("sky", "scraper"),
+				new ParameterValues("snow", "ball"),
+				new ParameterValues("snow", "drift"),
+				new ParameterValues("some", "thing"),
+				new ParameterValues("sound", "proof"),
+				new ParameterValues("steam", "boat"),
+				new ParameterValues("sun", "dial"),
+				new ParameterValues("sun", "flower"),
+				new ParameterValues("sun", "glasses"),
+				new ParameterValues("super", "market"),
+				new ParameterValues("table", "cloth"),
+				new ParameterValues("tea", "pot"),
+				new ParameterValues("text", "book"),
+				new ParameterValues("thunder", "bird"),
+				new ParameterValues("thunder", "storm"),
+				new ParameterValues("time", "table"),
+				new ParameterValues("tool", "box"),
+				new ParameterValues("town", "ship"),
+				new ParameterValues("under", "belly"),
+				new ParameterValues("under", "clothes"),
+				new ParameterValues("under", "cover"),
+				new ParameterValues("under", "ground"),
+				new ParameterValues("under", "pass"),
+				new ParameterValues("up", "hill"),
+				new ParameterValues("up", "lift"),
+				new ParameterValues("up", "link"),
+				new ParameterValues("up", "right"),
+				new ParameterValues("up", "rising"),
+				new ParameterValues("up", "side"),
+				new ParameterValues("up", "stairs"),
+				new ParameterValues("up", "time"),
+				new ParameterValues("up", "wind"),
+				new ParameterValues("wall", "paper"),
+				new ParameterValues("ware", "house"),
+				new ParameterValues("wash", "cloth"),
+				new ParameterValues("wash", "room"),
+				new ParameterValues("waste", "land"),
+				new ParameterValues("waste", "water"),
+				new ParameterValues("watch", "maker"),
+				new ParameterValues("water", "color"),
+				new ParameterValues("water", "mark"),
+				new ParameterValues("water", "proof"),
+				new ParameterValues("water", "shed"),
+				new ParameterValues("water", "way"),
+				new ParameterValues("weather", "proof"),
+				new ParameterValues("week", "day"),
+				new ParameterValues("week", "end"),
+				new ParameterValues("wheel", "barrow"),
+				new ParameterValues("wheel", "chair"),
+			});
+		}
+
+		@Test
+		public void test() {
+			assertThat(removeSuffix(original, suffix), is(equalTo(expectedResult)));
+		}
+
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// ------------------------------------------------------------
+
+		private static class ParameterValues {
+
+			private final String stem;
+
+			private final String suffix;
+
+
+			public ParameterValues(String stem, String suffix) {
+				this.stem = stem;
+				this.suffix = suffix;
+			}
+
+
+			public String getStem() {
+				return stem;
+			}
+
+			public String getSuffix() {
+				return suffix;
+			}
+
+		}
+
 	}
 
 }

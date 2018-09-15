@@ -43,7 +43,7 @@ public class Strings {
 	 */
 	public static String center(String string, int targetLength, char padding) {
 		Contract.checkArgument(string != null, "String must not be null");
-		Contract.checkArgument(targetLength >= 0, "Target length must not be negative");
+		Contract.checkArgument(targetLength >= 0, "Target length must not be negative: {0}", targetLength);
 
 		if (string.length() >= targetLength) {
 			return string;
@@ -245,7 +245,7 @@ public class Strings {
 	}
 
 	/**
-	 * Checks whether the given string is composed from whitespace characters only.
+	 * Checks whether the given string is composed of whitespace characters only.
 	 *
 	 * @since 1.6
 	 *
@@ -310,7 +310,7 @@ public class Strings {
 	 */
 	public static String padEnd(String string, int minLength, char padding) {
 		Contract.checkArgument(string != null, "String must not be null");
-		Contract.checkArgument(minLength >= 0, "Minimum length must not be negative");
+		Contract.checkArgument(minLength >= 0, "Minimum length must not be negative: {0}", minLength);
 
 		if (string.length() >= minLength) {
 			return string;
@@ -335,7 +335,7 @@ public class Strings {
 	 */
 	public static String padStart(String string, int minLength, char padding) {
 		Contract.checkArgument(string != null, "String must not be null");
-		Contract.checkArgument(minLength >= 0, "Minimum length must not be negative");
+		Contract.checkArgument(minLength >= 0, "Minimum length must not be negative: {0}", minLength);
 
 		if (string.length() >= minLength) {
 			return string;
@@ -375,8 +375,9 @@ public class Strings {
 		Contract.checkArgument(prefix != null, "Prefix must not be null");
 
 		int prefixPosition = 0;
-		if (string.regionMatches(ignoreCase, prefixPosition, prefix, 0, prefix.length())) {
-			return string.substring(prefix.length());
+		int prefixLength = prefix.length();
+		if (string.regionMatches(ignoreCase, prefixPosition, prefix, 0, prefixLength)) {
+			return string.substring(prefixLength);
 		} else {
 			return string;
 		}
@@ -406,8 +407,9 @@ public class Strings {
 		Contract.checkArgument(string != null, "String must not be null");
 		Contract.checkArgument(suffix != null, "Suffix must not be null");
 
-		int suffixPosition = string.length() - suffix.length();
-		if (string.regionMatches(ignoreCase, suffixPosition, suffix, 0, suffix.length())) {
+		int suffixLength = suffix.length();
+		int suffixPosition = string.length() - suffixLength;
+		if (string.regionMatches(ignoreCase, suffixPosition, suffix, 0, suffixLength)) {
 			return string.substring(0, suffixPosition);
 		} else {
 			return string;
@@ -437,7 +439,7 @@ public class Strings {
 	 */
 	public static String repeat(String string, int count) {
 		Contract.checkArgument(string != null, "String must not be null");
-		Contract.checkArgument(count >= 0, "Count must not be negative");
+		Contract.checkArgument(count >= 0, "Count must not be negative: {0}", count);
 
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < count; i++) {
@@ -486,6 +488,38 @@ public class Strings {
 		Contract.checkArgument(string != null, "String must not be null");
 
 		return string.toUpperCase(ROOT);
+	}
+
+	/**
+	 * Removes all leading whitespace characters from the given string.
+	 *
+	 * @throws IllegalArgumentException if {@code string} is {@code null}
+	 *
+	 * @since 2.1
+	 */
+	public static String trimLeft(String string) {
+		Contract.checkArgument(string != null, "String must not be null");
+
+		StringBuilder builder = new StringBuilder(string);
+		StringBuilders.trimLeft(builder);
+
+		return builder.toString();
+	}
+
+	/**
+	 * Removes all trailing whitespace characters from the given string.
+	 *
+	 * @throws IllegalArgumentException if {@code string} is {@code null}
+	 *
+	 * @since 2.1
+	 */
+	public static String trimRight(String string) {
+		Contract.checkArgument(string != null, "String must not be null");
+
+		StringBuilder builder = new StringBuilder(string);
+		StringBuilders.trimRight(builder);
+
+		return builder.toString();
 	}
 
 }
